@@ -6,6 +6,7 @@ namespace TwoFun.GenericRepository.WebUI.Controllers
 {
     public class HomeController : Controller
     {
+        //branch try
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
