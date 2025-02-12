@@ -66,5 +66,31 @@ namespace TwoFun.GenericRepository
         /// <returns>Returns <see cref="Task"/>.</returns>
         Task AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default)
             where TEntity : class;
+
+        /// <summary>
+        /// This method takes <see cref="IEnumerable{TEntity}"/> objects, mark the objects as <see cref="EntityState.Added"/> to the <see cref="ChangeTracker"/> of the <see cref="DbContext"/>.
+        /// Bu Method  <see cref="IEnumerable{TEntity}"/> tipi alır, <see cref="EntityState.Added"/> olarak <see cref="ChangeTracker"/> da işaretler <see cref="DbContext"/>.
+        /// <para>
+        /// Call <see cref="SaveChangesAsync(CancellationToken)"/> to persist the changes to the database.
+        /// Veritabanı değişiklikleri için Methodu çağrılmalıdır.
+        /// </para>
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the <paramref name="entities"/> to be added. Eklencek Entity'ler</typeparam>
+        /// <param name="entities">The <typeparamref name="TEntity"/> objects to be inserted to the database on Eklenen Entityler <see cref="SaveChangesAsync(CancellationToken)"/>.</param>
+        void Add<TEntity>(IEnumerable<TEntity> entities)
+            where TEntity : class;
+        /// <summary>
+        /// This method takes a collection of <typeparamref name="TEntity"/> object, adds them to the change tracker and will
+        /// be inserted into the database when <see cref="IRepository.SaveChangesAsync(CancellationToken)" /> is called.
+        /// Bu Method <typeparamref name="TEntity"/> objesi alır ,  <see cref="IRepository.SaveChangesAsync(CancellationToken)" /> çağrıldığında
+        /// Veritabanına eklenir ve Tracker ile takip edilebilir
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity. Entity Tipi</typeparam>
+        /// <param name="entities">The entities to be inserted. Eklenecek Entity'ler</param>
+        /// <param name="cancellationToken"> A <see cref="CancellationToken"/> to observe while waiting for the task to complete. İptal etmek için Token gönderiliyor ve istek iptali tepeden en alta taşınıyor</param>
+        /// <returns>Returns <see cref="Task"/>.</returns>
+        Task AddAsync<TEntity>(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+            where TEntity : class;
+
     }
 }

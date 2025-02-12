@@ -24,6 +24,15 @@ namespace TwoFun.GenericRepository
             _dbContext.Set<TEntity>().Add(entity);
         }
 
+        public void Add<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
+        {
+            if (entities == null)
+            {
+                throw new ArgumentNullException(nameof(entities));
+            }
+            _dbContext.Set<TEntity>().AddRange(entities);
+        }
+
         public async Task AddAsync<TEntity>(TEntity entity, CancellationToken cancellationToken = default)
    where TEntity : class
         {
@@ -33,6 +42,15 @@ namespace TwoFun.GenericRepository
             }
 
             await _dbContext.Set<TEntity>().AddAsync(entity, cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task AddAsync<TEntity>(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default) where TEntity : class
+        {
+            if (entities == null)
+            {
+                throw new ArgumentNullException(nameof(entities));
+            }
+            await _dbContext.Set<TEntity>().AddRangeAsync(entities, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task InsertAsync<TEntity>(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default) where TEntity : class
