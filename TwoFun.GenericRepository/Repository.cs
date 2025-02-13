@@ -80,10 +80,30 @@ namespace TwoFun.GenericRepository
             return primaryKeyValue;
         }
 
+        public void Remove<TEntity>(TEntity entity) where TEntity : class
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+            _dbContext.Remove(entity);
+        }
+
+        public void Remove<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
+        {
+            if (entities == null)
+            {
+                throw new ArgumentNullException(nameof(entities));
+            }
+            _dbContext.RemoveRange(entities);
+        }
+
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             int count = await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             return count;
         }
+
+
     }
 }
