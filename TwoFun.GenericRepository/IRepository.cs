@@ -91,6 +91,31 @@ namespace TwoFun.GenericRepository
         /// <returns>Returns <see cref="Task"/>.</returns>
         Task AddAsync<TEntity>(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
             where TEntity : class;
+        /// <summary>
+        /// This method takes an <typeparamref name="TEntity"/> object, mark the object as <see cref="EntityState.Deleted"/> to the <see cref="ChangeTracker"/> of the <see cref="DbContext"/>.
+        /// Bu Method <typeparamref name="TEntity"/> objesi alır, objeyi <see cref="EntityState.Deleted"/>  olarak işaretler <see cref="ChangeTracker"/> da takip edilir <see cref="DbContext"/> de görülür.
+        /// <para>
+        /// Call <see cref="SaveChangesAsync(CancellationToken)"/> to persist the changes to the database.
+        /// Değişiklikleri veritabanına kaydeder
+        /// </para>
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the <paramref name="entity"/> to be marked as deleted. Silinen Entity değeri silindi olarak işaretlenir</typeparam>
+        /// <param name="entity">The <typeparamref name="TEntity"/> object to be deleted from the database on <see cref="SaveChangesAsync(CancellationToken)"/>.Databae değişiklikleri için çağırın</param>
+        void Remove<TEntity>(TEntity entity)
+            where TEntity : class;
+
+        /// <summary>
+        /// This method takes <see cref="IEnumerable{TEntity}"/> objects, mark the objects as <see cref="EntityState.Deleted"/> to the <see cref="ChangeTracker"/> of the <see cref="DbContext"/>.
+        /// Bu method  <see cref="IEnumerable{TEntity}"/> objesi alır,  <see cref="EntityState.Deleted"/> olarak işaretler <see cref="ChangeTracker"/> <see cref="DbContext"/> de görünür.
+        /// <para>
+        /// Call <see cref="SaveChangesAsync(CancellationToken)"/> to persist the changes to the database.
+        /// Değişiklikleri veratabnına uygulmak için 
+        /// </para>
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the <paramref name="entities"/> to be marked as deleted.TEntity Deleted olarak işaretlenir</typeparam>
+        /// <param name="entities">The <typeparamref name="TEntity"/> objects to be deleted from the database on <see cref="SaveChangesAsync(CancellationToken)"/>.</param> Silinen objeyi veritabanından silme ikin çağrılır.
+        void Remove<TEntity>(IEnumerable<TEntity> entities)
+            where TEntity : class;
 
     }
 }
