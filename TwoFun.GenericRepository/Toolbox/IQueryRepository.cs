@@ -18,6 +18,15 @@ namespace TwoFun.GenericRepository.Toolbox
            bool asNoTracking,
            CancellationToken cancellationToken = default)
             where T : class;
+        Task<List<TEntity>> GetListAsync<TEntity>(
+           Expression<Func<TEntity, bool>> condition,
+           bool asNoTracking,
+           CancellationToken cancellationToken = default)
+            where TEntity : class;
+        Task<List<TEntity>> GetListAsync<TEntity>(
+            Expression<Func<TEntity, bool>> condition,
+            CancellationToken cancellationToken = default)
+            where TEntity : class;
 
     }
 }
