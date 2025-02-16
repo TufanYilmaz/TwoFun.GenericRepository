@@ -13,14 +13,12 @@ namespace TwoFun.GenericRepository.Toolbox
         where TDbContext : DbContext
     {
         private readonly TDbContext _dbContext;
-
         public QueryRepository(TDbContext dbContext)
         {
             _dbContext = dbContext;
         }
         public IQueryable<TEntity> GetQueryable<TEntity>()
             where TEntity : class => _dbContext.Set<TEntity>();
-     
 
         public async Task<List<TEntity>> GetListAsync<TEntity>(
            Expression<Func<TEntity, bool>> condition,
@@ -35,20 +33,31 @@ namespace TwoFun.GenericRepository.Toolbox
             {
                 query = query.Where(condition);
             }
-
             if (includes != null)
             {
                 query = includes(query);
             }
-
             if (asNoTracking)
             {
                 query = query.AsNoTracking();
             }
-
             List<TEntity> items = await query.ToListAsync(cancellationToken).ConfigureAwait(false);
-
             return items;
+        }
+        public Task<List<TEntity>> GetListAsync<TEntity>(
+           Expression<Func<TEntity, bool>> condition,
+           bool asNoTracking,
+           CancellationToken cancellationToken = default)
+            where TEntity : class
+        {
+            return GetListAsync(condition, null, asNoTracking, cancellationToken);
+        }
+        public Task<List<TEntity>> GetListAsync<TEntity>(
+            Expression<Func<TEntity, bool>> condition, 
+            CancellationToken cancellationToken = default)
+            where TEntity : class
+        {
+            return GetListAsync(condition, false, cancellationToken);
         }
     }
 }
