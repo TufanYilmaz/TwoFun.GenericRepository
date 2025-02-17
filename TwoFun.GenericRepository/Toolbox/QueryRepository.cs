@@ -59,5 +59,44 @@ namespace TwoFun.GenericRepository.Toolbox
         {
             return GetListAsync(condition, false, cancellationToken);
         }
+        public Task<List<TEntity>> GetListAsync<TEntity>(CancellationToken cancellationToken = default)
+           where TEntity : class
+        {
+            return GetListAsync<TEntity>(false, cancellationToken);
+        }
+
+        public  Task<List<TEntity>> GetListAsync<TEntity>(bool asNoTracking, CancellationToken cancellationToken = default)
+            where TEntity : class
+        {
+            Expression<Func<TEntity, bool>> conditionNull = null;
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> includeNull = null;
+            return GetListAsync(condition: conditionNull, includes: includeNull, asNoTracking: asNoTracking,cancellationToken: cancellationToken);
+        }
+        public Task<List<T>> GetListAsync<T>(
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> includes,
+            CancellationToken cancellationToken = default)
+            where T : class
+        {
+            return GetListAsync(includes, false, cancellationToken);
+        }
+        public async Task<List<TEntity>> GetListAsync<TEntity>(
+            Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>> includes,
+            bool asNoTracking,
+            CancellationToken cancellationToken = default)
+            where TEntity : class
+        {
+            IQueryable<TEntity> query = _dbContext.Set<TEntity>();
+            if (includes != null)
+            {
+                query = includes(query);
+            }
+            if (asNoTracking)
+            {
+                query = query.AsNoTracking();
+            }
+            List<TEntity> items = await query.ToListAsync(cancellationToken).ConfigureAwait(false);
+            return items;
+        }
+
     }
 }
