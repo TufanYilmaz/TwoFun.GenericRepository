@@ -41,5 +41,15 @@ namespace TwoFun.GenericRepository.Toolbox
         public Task<List<TEntity>> GetListAsync<TEntity>(CancellationToken cancellationToken = default)
            where TEntity : class;
 
+        Task<List<TProjectedType>> GetListAsync<TEntity, TProjectedType>(
+            Expression<Func<TEntity, TProjectedType>> selectExpression,
+            CancellationToken cancellationToken = default)
+            where TEntity : class;
+
+        Task<List<TProjectedType>> GetListAsync<TEntity, TProjectedType>(
+            Expression<Func<TEntity, bool>> condition,
+            Expression<Func<TEntity, TProjectedType>> selectExpression,
+            CancellationToken cancellationToken = default)
+            where TEntity : class;
     }
 }

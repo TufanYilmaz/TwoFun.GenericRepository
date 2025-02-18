@@ -98,5 +98,42 @@ namespace TwoFun.GenericRepository.Toolbox
             return items;
         }
 
+        public async Task<List<TProjectedType>> GetListAsync<TEntity, TProjectedType>(
+            Expression<Func<TEntity, TProjectedType>> selectExpression,
+            CancellationToken cancellationToken = default) where TEntity : class
+        {
+            if (selectExpression == null)
+            {
+                throw new ArgumentNullException(nameof(selectExpression));
+            }
+
+            List<TProjectedType> entities = await _dbContext.Set<TEntity>()
+                .Select(selectExpression).ToListAsync(cancellationToken).ConfigureAwait(false);
+
+            return entities;
+        }
+
+        public async Task<List<TProjectedType>> GetListAsync<TEntity, TProjectedType>(
+            Expression<Func<TEntity, bool>> condition,
+            Expression<Func<TEntity, TProjectedType>> selectExpression, 
+            CancellationToken cancellationToken = default) where TEntity : class
+        {
+            if (selectExpression == null)
+            {
+                throw new ArgumentNullException(nameof(selectExpression));
+            }
+
+            IQueryable<TEntity> query = _dbContext.Set<TEntity>();
+
+            if (condition != null)
+            {
+                query = query.Where(condition);
+            }
+
+            List<TProjectedType> projectedEntites = await query.Select(selectExpression)
+                .ToListAsync(cancellationToken).ConfigureAwait(false);
+
+            return projectedEntites;
+        }
     }
 }
