@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
+using System.Linq.Expressions;
 
 namespace TwoFun.GenericRepository
 {
@@ -39,6 +40,10 @@ namespace TwoFun.GenericRepository
         Task CommitTransactionAsync(
           IDbContextTransaction dbContextTransaction,
           CancellationToken cancellationToken = default);
+        Task<int> ExecuteDeleteAsync<TEntity>(
+            Expression<Func<TEntity, bool>> condition,
+            CancellationToken cancellationToken = default)
+            where TEntity : class;
 
     }
 }

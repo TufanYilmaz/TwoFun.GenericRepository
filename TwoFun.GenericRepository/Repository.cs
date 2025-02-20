@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
+using System.Linq.Expressions;
 
 namespace TwoFun.GenericRepository
 {
@@ -121,7 +122,14 @@ namespace TwoFun.GenericRepository
             int count = await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             return count;
         }
-
+        public async Task<int> ExecuteDeleteAsync<TEntity>(
+            Expression<Func<TEntity, bool>> condition,
+            CancellationToken cancellationToken = default)
+            where TEntity : class
+        {
+            int count = await _dbContext.Set<TEntity>().Where(condition).ExecuteDeleteAsync(cancellationToken);
+            return count;
+        }
 
     }
 }
