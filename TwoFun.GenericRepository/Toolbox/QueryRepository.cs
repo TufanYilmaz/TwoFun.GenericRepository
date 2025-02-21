@@ -135,5 +135,86 @@ namespace TwoFun.GenericRepository.Toolbox
 
             return projectedEntites;
         }
+
+        public Task<T> GetAsync<T>(
+            Expression<Func<T, bool>> condition,
+            CancellationToken cancellationToken = default)
+           where T : class
+        {
+            return GetAsync(condition, null, false, cancellationToken);
+        }
+
+        public Task<T> GetAsync<T>(
+            Expression<Func<T, bool>> condition,
+            bool asNoTracking,
+            CancellationToken cancellationToken = default)
+           where T : class
+        {
+            return GetAsync(condition, null, asNoTracking, cancellationToken);
+        }
+
+        public Task<T> GetAsync<T>(
+            Expression<Func<T, bool>> condition,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> includes,
+            CancellationToken cancellationToken = default)
+           where T : class
+        {
+            return GetAsync(condition, includes, false, cancellationToken);
+        }
+
+        public async Task<T> GetAsync<T>(
+            Expression<Func<T, bool>> condition,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> includes,
+            bool asNoTracking,
+            CancellationToken cancellationToken = default)
+           where T : class
+        {
+            IQueryable<T> query = _dbContext.Set<T>();
+
+            if (condition != null)
+            {
+                query = query.Where(condition);
+            }
+
+            if (includes != null)
+            {
+                query = includes(query);
+            }
+
+            if (asNoTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            return await query.FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+       
+
+        
+
+        public async Task<TProjectedType> GetAsync<T, TProjectedType>(
+            Expression<Func<T, bool>> condition,
+            Expression<Func<T, TProjectedType>> selectExpression,
+            CancellationToken cancellationToken = default)
+            where T : class
+        {
+            if (selectExpression == null)
+            {
+                throw new ArgumentNullException(nameof(selectExpression));
+            }
+
+            IQueryable<T> query = _dbContext.Set<T>();
+
+            if (condition != null)
+            {
+                query = query.Where(condition);
+            }
+
+            return await query.Select(selectExpression).FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+
+        
     }
 }
