@@ -1,5 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage;
+using System.Data;
+using System.Linq.Expressions;
 
 namespace TwoFun.GenericRepository
 {
@@ -53,6 +56,17 @@ namespace TwoFun.GenericRepository
             await _dbContext.Set<TEntity>().AddRangeAsync(entities, cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            IDbContextTransaction dbContextTransaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+            return dbContextTransaction;
+        }
+
+        public async Task CommitTransactionAsync(IDbContextTransaction dbContextTransaction, CancellationToken cancellationToken = default)
+        {
+            await dbContextTransaction.CommitAsync(cancellationToken);
+        }
+
         public async Task InsertAsync<TEntity>(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default) where TEntity : class
         {
             if(entities == null)
@@ -98,12 +112,24 @@ namespace TwoFun.GenericRepository
             _dbContext.RemoveRange(entities);
         }
 
+        public async Task RollbackTransactionAsync(IDbContextTransaction dbContextTransaction, CancellationToken cancellationToken = default)
+        {
+            await dbContextTransaction.RollbackAsync(cancellationToken);
+        }
+
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             int count = await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             return count;
         }
-
+        public async Task<int> ExecuteDeleteAsync<TEntity>(
+            Expression<Func<TEntity, bool>> condition,
+            CancellationToken cancellationToken = default)
+            where TEntity : class
+        {
+            int count = await _dbContext.Set<TEntity>().Where(condition).ExecuteDeleteAsync(cancellationToken);
+            return count;
+        }
 
     }
 }
