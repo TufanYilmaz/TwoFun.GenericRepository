@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TwoFun.GenericRepository.Toolbox
+namespace TwoFun.GenericRepository.Toolbox.Specifications
 {
     public class Specification<T> : SpecificationBase<T>
     where T : class

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using TwoFun.GenericRepository.Toolbox.Specifications;
 
 namespace TwoFun.GenericRepository.Toolbox
 {
@@ -214,7 +215,17 @@ namespace TwoFun.GenericRepository.Toolbox
             return await query.Select(selectExpression).FirstOrDefaultAsync(cancellationToken).ConfigureAwait(false);
         }
 
+        public Task<List<TEntity>> GetListAsync<TEntity>(
+            Specification<TEntity> specification, 
+            bool asNoTracking, 
+            CancellationToken cancellationToken = default) where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
 
-        
+        public Task<List<TProjectedType>> GetListAsync<TEntity, TProjectedType>(Specification<TEntity> specification, Expression<Func<TEntity, TProjectedType>> selectExpression, CancellationToken cancellationToken = default) where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
     }
 }
